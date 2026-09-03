@@ -11,6 +11,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: self-hosted
+    env:
+      WEB_PORT: 8080
     steps:
       - uses: actions/checkout@v4
 
@@ -25,9 +27,9 @@ jobs:
 
       - name: Test endpoints
         run: |
-          curl.exe -f http://localhost/api/health
-          curl.exe -f http://localhost/api/items
-          curl.exe -f http://localhost/
+          curl.exe -f http://localhost:${{ env.WEB_PORT }}/api/health
+          curl.exe -f http://localhost:${{ env.WEB_PORT }}/api/items
+          curl.exe -f http://localhost:${{ env.WEB_PORT }}/
 
       - name: Print logs on failure
         if: failure()
