@@ -18,26 +18,16 @@ jobs:
         run: docker compose build --no-cache
 
       - name: Start stack
-        run: docker compose up -d
+        run: docker compose up -d --wait
 
       - name: Wait for services to be healthy
-        run: |
-          for i in $(seq 1 30); do
-            UNHEALTHY=$(docker compose ps --format json | \
-              grep -c '"Health":"unhealthy"\|"Health":"starting"' || true)
-            if [ "$UNHEALTHY" -eq 0 ]; then
-              echo "All services healthy"
-              break
-            fi
-            echo "Waiting for services... ($i/30)"
-            sleep 2
-          done
+        run: docker compose ps
 
       - name: Test endpoints
         run: |
-          curl -f http://localhost/api/health
-          curl -f http://localhost/api/items
-          curl -f http://localhost/
+          curl.exe -f http://localhost/api/health
+          curl.exe -f http://localhost/api/items
+          curl.exe -f http://localhost/
 
       - name: Print logs on failure
         if: failure()
